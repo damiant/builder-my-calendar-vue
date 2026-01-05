@@ -1,0 +1,11 @@
+- After making all the code changes needed to meet the user request run `npm run check` to check for build, lint and test errors and fix any found.
+- Use the Vue 3 Composition API exclusively for new components and composables.
+- Keep components small, single-responsibility, and under ~200 lines whenever possible.
+- Extract reusable stateful logic into composables prefixed with `use`.
+- Follow a consistent project structure and never introduce unnecessary folder nesting.
+- Use Pinia for shared or global state and mutate store state only through store actions.
+- Apply strict TypeScript typing to props, emits, composables, and store state without using `any`.
+- Perform API calls and side effects in composables or services, not directly in components.
+- Optimize rendering by favoring `computed` over methods and avoiding unnecessary watchers.
+- Write semantic, accessible templates using proper HTML elements and bindings.
+- Enforce consistency using ESLint, Prettier, and automated tests rather than manual conventions.
