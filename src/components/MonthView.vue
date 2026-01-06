@@ -125,6 +125,7 @@ const handlePanelChange = date => {
 
 .month-view :deep(.ant-picker-cell-selected .ant-picker-cell-inner) {
   background-color: #65a30d !important;
+  color: #ffffff !important;
 }
 
 .month-view :deep(.ant-picker-cell-today .ant-picker-cell-inner::before) {
