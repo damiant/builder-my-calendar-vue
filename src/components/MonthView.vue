@@ -144,8 +144,16 @@ const handlePanelChange = date => {
   color: #ffffff !important;
 }
 
-.month-view :deep(.ant-picker-cell-selected *) {
+.month-view :deep(.ant-picker-cell-selected .ant-picker-cell-inner > *:not(.events-list)) {
   color: #ffffff !important;
+}
+
+.month-view :deep(.ant-picker-cell-selected .events-list) {
+  color: initial;
+}
+
+.month-view :deep(.ant-picker-cell-selected .events-list *) {
+  color: initial !important;
 }
 
 .month-view :deep(.ant-picker-cell-today .ant-picker-cell-inner::before) {
