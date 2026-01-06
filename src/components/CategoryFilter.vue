@@ -5,8 +5,8 @@ import { useCalendarStore } from '../stores/calendar'
 const calendarStore = useCalendarStore()
 
 const categories = [
-  { key: 'work', label: 'Work', color: '#65A30D' },
-  { key: 'home', label: 'Home', color: '#dc2626' }
+  { key: 'work', label: 'Work', color: '#dc2626' },
+  { key: 'home', label: 'Home', color: '#2563eb' }
 ]
 
 const selectedCategories = computed(() => calendarStore.selectedCategories)
@@ -59,5 +59,14 @@ const handleCategoryChange = checkedValues => {
 :deep(.ant-select-selection-item) {
   display: flex;
   align-items: center;
+  color: #000000 !important;
+}
+
+:deep(.ant-select-selection-item-content) {
+  color: #000000 !important;
+}
+
+:deep(.ant-select-selection-item .category-option) {
+  color: #000000 !important;
 }
 </style>

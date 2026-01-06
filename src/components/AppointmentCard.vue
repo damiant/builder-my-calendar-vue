@@ -29,7 +29,7 @@ const formattedTime = computed(() => {
 
 // Get category color
 const categoryColor = computed(() => {
-  return props.appointment.category === 'work' ? '#65A30D' : '#dc2626'
+  return props.appointment.category === 'work' ? '#dc2626' : '#2563eb'
 })
 
 // Get category label
