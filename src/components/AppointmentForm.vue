@@ -178,12 +178,12 @@ defineExpose({
 }
 
 :deep(.ant-radio-button-wrapper-checked) {
-  background-color: #65a30d !important;
-  border-color: #65a30d !important;
+  background-color: #f3f4f6 !important;
+  border-color: #374151 !important;
 }
 
-:deep(.ant-radio-button-wrapper-checked .category-dot) {
-  background-color: white !important;
+:deep(.ant-radio-button-wrapper-checked:hover) {
+  background-color: #e5e7eb !important;
 }
 
 @media (max-width: 480px) {
