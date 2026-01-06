@@ -180,10 +180,12 @@ defineExpose({
 :deep(.ant-radio-button-wrapper-checked) {
   background-color: #f3f4f6 !important;
   border-color: #374151 !important;
+  color: #000000 !important;
 }
 
 :deep(.ant-radio-button-wrapper-checked:hover) {
   background-color: #e5e7eb !important;
+  color: #000000 !important;
 }
 
 @media (max-width: 480px) {
