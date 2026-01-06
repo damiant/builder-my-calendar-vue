@@ -1,5 +1,5 @@
 <script setup>
-import { computed, h } from 'vue'
+import { computed, h, inject } from 'vue'
 import { useCalendarStore } from '../stores/calendar'
 import { useAppointmentsStore } from '../stores/appointments'
 
@@ -7,6 +7,9 @@ const emit = defineEmits(['edit-appointment'])
 
 const calendarStore = useCalendarStore()
 const appointmentsStore = useAppointmentsStore()
+
+// Get the new appointment handler from parent
+const newAppointmentHandler = inject('newAppointment', null)
 
 // Calendar value binding
 const calendarValue = computed({
@@ -35,7 +38,15 @@ const getDateAppointments = date => {
 
 // Handle date selection
 const handleSelect = date => {
-  calendarStore.setSelectedDate(date)
+  const isSameDate = calendarStore.selectedDate.isSame(date, 'day')
+
+  if (isSameDate && newAppointmentHandler) {
+    // If clicking the already selected date, open appointment dialog
+    newAppointmentHandler()
+  } else {
+    // Otherwise, just update the selected date
+    calendarStore.setSelectedDate(date)
+  }
 }
 
 // Handle appointment click
