@@ -19,7 +19,7 @@ const calendarValue = computed({
 
 // Get category color
 const getCategoryColor = category => {
-  return category === 'work' ? '#65A30D' : '#dc2626'
+  return category === 'work' ? '#dc2626' : '#2563eb'
 }
 
 // Get appointments for a specific date

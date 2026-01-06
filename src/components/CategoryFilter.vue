@@ -5,8 +5,8 @@ import { useCalendarStore } from '../stores/calendar'
 const calendarStore = useCalendarStore()
 
 const categories = [
-  { key: 'work', label: 'Work', color: '#65A30D' },
-  { key: 'home', label: 'Home', color: '#dc2626' }
+  { key: 'work', label: 'Work', color: '#dc2626' },
+  { key: 'home', label: 'Home', color: '#2563eb' }
 ]
 
 const selectedCategories = computed(() => calendarStore.selectedCategories)

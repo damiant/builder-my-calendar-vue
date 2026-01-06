@@ -28,8 +28,8 @@ const updateField = (field, value) => {
 
 // Category options
 const categoryOptions = [
-  { value: 'work', label: 'Work', color: '#65A30D' },
-  { value: 'home', label: 'Home', color: '#dc2626' }
+  { value: 'work', label: 'Work', color: '#dc2626' },
+  { value: 'home', label: 'Home', color: '#2563eb' }
 ]
 
 // Validation rules
