@@ -1,26 +1,30 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import dayjs from 'dayjs'
+import type { Ref, ComputedRef } from 'vue'
+import dayjs, { type Dayjs } from 'dayjs'
+import type { AppointmentCategory } from './appointments'
+
+export type ViewMode = 'month' | 'year' | 'planner'
 
 export const useCalendarStore = defineStore('calendar', () => {
   // State
-  const selectedDate = ref(dayjs())
-  const viewMode = ref('month') // 'month', 'year', 'planner'
-  const selectedCategories = ref(['work', 'home']) // All categories selected by default
+  const selectedDate: Ref<Dayjs> = ref(dayjs())
+  const viewMode: Ref<ViewMode> = ref('month')
+  const selectedCategories: Ref<AppointmentCategory[]> = ref(['work', 'home'])
 
   // Getters
-  const currentYear = computed(() => selectedDate.value.year())
-  const currentMonth = computed(() => selectedDate.value.month())
-  const currentMonthName = computed(() => selectedDate.value.format('MMMM'))
-  const formattedDate = computed(() => selectedDate.value.format('YYYY-MM-DD'))
+  const currentYear: ComputedRef<number> = computed(() => selectedDate.value.year())
+  const currentMonth: ComputedRef<number> = computed(() => selectedDate.value.month())
+  const currentMonthName: ComputedRef<string> = computed(() => selectedDate.value.format('MMMM'))
+  const formattedDate: ComputedRef<string> = computed(() => selectedDate.value.format('YYYY-MM-DD'))
 
   // Check if a category is selected
-  const isCategorySelected = category => {
+  const isCategorySelected = (category: AppointmentCategory): boolean => {
     return selectedCategories.value.includes(category)
   }
 
   // Check if all categories are selected (no filtering)
-  const isShowingAll = computed(() => {
+  const isShowingAll: ComputedRef<boolean> = computed(() => {
     return (
       selectedCategories.value.length === 0 ||
       (selectedCategories.value.includes('work') && selectedCategories.value.includes('home'))
@@ -28,15 +32,15 @@ export const useCalendarStore = defineStore('calendar', () => {
   })
 
   // Actions
-  const setSelectedDate = date => {
+  const setSelectedDate = (date: string | Dayjs): void => {
     selectedDate.value = dayjs(date)
   }
 
-  const setViewMode = mode => {
+  const setViewMode = (mode: ViewMode): void => {
     viewMode.value = mode
   }
 
-  const toggleCategory = category => {
+  const toggleCategory = (category: AppointmentCategory): void => {
     const index = selectedCategories.value.indexOf(category)
     if (index === -1) {
       selectedCategories.value.push(category)
@@ -45,44 +49,44 @@ export const useCalendarStore = defineStore('calendar', () => {
     }
   }
 
-  const setCategories = categories => {
+  const setCategories = (categories: AppointmentCategory[]): void => {
     selectedCategories.value = [...categories]
   }
 
-  const selectAllCategories = () => {
+  const selectAllCategories = (): void => {
     selectedCategories.value = ['work', 'home']
   }
 
-  const clearCategories = () => {
+  const clearCategories = (): void => {
     selectedCategories.value = []
   }
 
   // Navigation
-  const goToPreviousMonth = () => {
+  const goToPreviousMonth = (): void => {
     selectedDate.value = selectedDate.value.subtract(1, 'month')
   }
 
-  const goToNextMonth = () => {
+  const goToNextMonth = (): void => {
     selectedDate.value = selectedDate.value.add(1, 'month')
   }
 
-  const goToPreviousYear = () => {
+  const goToPreviousYear = (): void => {
     selectedDate.value = selectedDate.value.subtract(1, 'year')
   }
 
-  const goToNextYear = () => {
+  const goToNextYear = (): void => {
     selectedDate.value = selectedDate.value.add(1, 'year')
   }
 
-  const goToToday = () => {
+  const goToToday = (): void => {
     selectedDate.value = dayjs()
   }
 
-  const setYear = year => {
+  const setYear = (year: number): void => {
     selectedDate.value = selectedDate.value.year(year)
   }
 
-  const setMonth = month => {
+  const setMonth = (month: number): void => {
     selectedDate.value = selectedDate.value.month(month)
   }
 

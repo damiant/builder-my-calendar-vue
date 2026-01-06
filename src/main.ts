@@ -21,7 +21,7 @@ app.use(pinia)
 app.use(Antd)
 
 // Register all icons globally
-const iconsList = [
+const iconsList: (keyof typeof Icons)[] = [
   'CalendarOutlined',
   'PlusOutlined',
   'SyncOutlined',
@@ -44,8 +44,9 @@ const iconsList = [
 ]
 
 iconsList.forEach(iconName => {
-  if (Icons[iconName]) {
-    app.component(iconName, Icons[iconName])
+  const icon = Icons[iconName]
+  if (icon && typeof icon !== 'string') {
+    app.component(iconName, icon)
   }
 })
 

@@ -5,14 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vue-tsc && vite build",
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix",
-    "format": "prettier --write \"src/**/*.{js,vue,ts,css,md,json}\"",
-    "check": "npm run build && npm run format && npm run lint && npm test -- --run"
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx --fix",
+    "format": "prettier --write \"src/**/*.{js,vue,ts,tsx,css,md,json}\"",
+    "type-check": "vue-tsc --noEmit",
+    "check": "npm run type-check && npm run build && npm run format && npm run lint && npm test -- --run"
   },
   "dependencies": {
     "ant-design-vue": "^4.2.6",

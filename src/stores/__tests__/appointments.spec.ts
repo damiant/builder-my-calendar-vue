@@ -1,16 +1,17 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useAppointmentsStore } from '../appointments'
+import type { AppointmentInput } from '../appointments'
 
 // Mock localStorage
 const localStorageMock = (() => {
-  let store = {}
+  let store: Record<string, string> = {}
   return {
-    getItem: vi.fn(key => store[key] || null),
-    setItem: vi.fn((key, value) => {
+    getItem: vi.fn((key: string) => store[key] || null),
+    setItem: vi.fn((key: string, value: string) => {
       store[key] = value
     }),
-    removeItem: vi.fn(key => {
+    removeItem: vi.fn((key: string) => {
       delete store[key]
     }),
     clear: vi.fn(() => {
@@ -48,14 +49,16 @@ describe('Appointments Store', () => {
     store.loadAppointments()
     const initialCount = store.appointments.length
 
-    const newAppointment = store.createAppointment({
+    const appointmentData: AppointmentInput = {
       title: 'Test Appointment',
       date: '2024-01-15',
       time: '10:00',
       isAllDay: false,
       category: 'work',
       notes: 'Test notes'
-    })
+    }
+
+    const newAppointment = store.createAppointment(appointmentData)
 
     expect(newAppointment).toBeDefined()
     expect(newAppointment.id).toBeDefined()
@@ -78,8 +81,8 @@ describe('Appointments Store', () => {
       title: 'Updated Title'
     })
 
-    expect(updated.title).toBe('Updated Title')
-    expect(store.getAppointmentById(appointment.id).title).toBe('Updated Title')
+    expect(updated?.title).toBe('Updated Title')
+    expect(store.getAppointmentById(appointment.id)?.title).toBe('Updated Title')
   })
 
   it('should delete an appointment', () => {
@@ -144,9 +147,9 @@ describe('Appointments Store', () => {
     const all = store.getFilteredAppointments([])
 
     expect(workOnly.length).toBe(1)
-    expect(workOnly[0].category).toBe('work')
+    expect(workOnly[0]?.category).toBe('work')
     expect(homeOnly.length).toBe(1)
-    expect(homeOnly[0].category).toBe('home')
+    expect(homeOnly[0]?.category).toBe('home')
     expect(all.length).toBe(2)
   })
 

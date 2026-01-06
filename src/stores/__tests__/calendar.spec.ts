@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useCalendarStore } from '../calendar'
 import dayjs from 'dayjs'
+import type { ViewMode } from '../calendar'
 
 describe('Calendar Store', () => {
   beforeEach(() => {
@@ -19,13 +20,13 @@ describe('Calendar Store', () => {
   it('should change view mode', () => {
     const store = useCalendarStore()
 
-    store.setViewMode('year')
+    store.setViewMode('year' as ViewMode)
     expect(store.viewMode).toBe('year')
 
-    store.setViewMode('planner')
+    store.setViewMode('planner' as ViewMode)
     expect(store.viewMode).toBe('planner')
 
-    store.setViewMode('month')
+    store.setViewMode('month' as ViewMode)
     expect(store.viewMode).toBe('month')
   })
 

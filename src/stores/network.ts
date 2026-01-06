@@ -1,19 +1,22 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import type { Ref, ComputedRef } from 'vue'
 import { useAppointmentsStore } from './appointments'
+
+export type SyncIconType = 'sync' | 'cloud-upload' | 'cloud'
 
 export const useNetworkStore = defineStore('network', () => {
   // State
-  const isOnline = ref(navigator.onLine)
-  const isSyncing = ref(false)
-  const lastSyncTime = ref(null)
+  const isOnline: Ref<boolean> = ref(navigator.onLine)
+  const isSyncing: Ref<boolean> = ref(false)
+  const lastSyncTime: Ref<number | null> = ref(null)
 
   // Event handlers
-  let onlineHandler = null
-  let offlineHandler = null
+  let onlineHandler: (() => void) | null = null
+  let offlineHandler: (() => void) | null = null
 
   // Getters
-  const syncStatusText = computed(() => {
+  const syncStatusText: ComputedRef<string> = computed(() => {
     if (isSyncing.value) {
       return 'Syncing changes...'
     }
@@ -26,9 +29,9 @@ export const useNetworkStore = defineStore('network', () => {
     return 'All changes synced'
   })
 
-  const syncIcon = computed(() => {
+  const syncIcon: ComputedRef<SyncIconType> = computed(() => {
     if (isSyncing.value) {
-      return 'sync' // Will spin
+      return 'sync'
     }
 
     const appointmentsStore = useAppointmentsStore()
@@ -40,7 +43,7 @@ export const useNetworkStore = defineStore('network', () => {
   })
 
   // Actions
-  const setOnline = status => {
+  const setOnline = (status: boolean): void => {
     isOnline.value = status
 
     // Attempt to sync when coming back online
@@ -49,7 +52,7 @@ export const useNetworkStore = defineStore('network', () => {
     }
   }
 
-  const syncPendingChanges = async () => {
+  const syncPendingChanges = async (): Promise<void> => {
     if (isSyncing.value || !isOnline.value) return
 
     const appointmentsStore = useAppointmentsStore()
@@ -67,7 +70,7 @@ export const useNetworkStore = defineStore('network', () => {
     }
   }
 
-  const initializeListeners = () => {
+  const initializeListeners = (): void => {
     onlineHandler = () => setOnline(true)
     offlineHandler = () => setOnline(false)
 
@@ -83,7 +86,7 @@ export const useNetworkStore = defineStore('network', () => {
     }
   }
 
-  const removeListeners = () => {
+  const removeListeners = (): void => {
     if (onlineHandler) {
       window.removeEventListener('online', onlineHandler)
     }

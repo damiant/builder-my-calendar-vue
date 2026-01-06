@@ -1,17 +1,55 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import dayjs from 'dayjs'
+import type { Ref, ComputedRef } from 'vue'
+import dayjs, { type Dayjs } from 'dayjs'
 
 const STORAGE_KEY = 'appointments'
 const PENDING_OPS_KEY = 'pending_operations'
 
+export type AppointmentCategory = 'work' | 'home'
+export type SyncStatus = 'synced' | 'pending'
+export type OperationType = 'create' | 'update' | 'delete'
+
+export interface Appointment {
+  id: string
+  title: string
+  date: string
+  time: string | null
+  isAllDay: boolean
+  category: AppointmentCategory
+  notes: string
+  syncStatus: SyncStatus
+  updatedAt: number
+}
+
+export interface AppointmentInput {
+  title: string
+  date: string | Dayjs
+  time?: string
+  isAllDay?: boolean
+  category: AppointmentCategory
+  notes?: string
+}
+
+export interface PendingOperation {
+  id: string
+  type: OperationType
+  data: Appointment | { id: string; deletedAt: number }
+  timestamp: number
+  retryCount: number
+}
+
+export interface AppointmentsByDate {
+  [key: string]: Appointment[]
+}
+
 // Generate unique ID
-const generateId = () => `apt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+const generateId = (): string => `apt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
 // Sample appointments for demonstration
-const createSampleAppointments = () => {
+const createSampleAppointments = (): Appointment[] => {
   const today = dayjs()
-  const samples = [
+  const samples: Appointment[] = [
     {
       id: generateId(),
       title: 'Work Meeting',
@@ -84,13 +122,13 @@ const createSampleAppointments = () => {
 
 export const useAppointmentsStore = defineStore('appointments', () => {
   // State
-  const appointments = ref([])
-  const pendingOperations = ref([])
-  const isLoading = ref(false)
+  const appointments: Ref<Appointment[]> = ref([])
+  const pendingOperations: Ref<PendingOperation[]> = ref([])
+  const isLoading: Ref<boolean> = ref(false)
 
   // Getters
-  const appointmentsByDate = computed(() => {
-    const map = {}
+  const appointmentsByDate: ComputedRef<AppointmentsByDate> = computed(() => {
+    const map: AppointmentsByDate = {}
     appointments.value.forEach(apt => {
       const dateKey = apt.date
       if (!map[dateKey]) {
@@ -101,18 +139,18 @@ export const useAppointmentsStore = defineStore('appointments', () => {
     return map
   })
 
-  const pendingCount = computed(() => pendingOperations.value.length)
+  const pendingCount: ComputedRef<number> = computed(() => pendingOperations.value.length)
 
-  const hasPendingChanges = computed(() => pendingOperations.value.length > 0)
+  const hasPendingChanges: ComputedRef<boolean> = computed(() => pendingOperations.value.length > 0)
 
   // Get appointments for a specific date
-  const getAppointmentsForDate = date => {
+  const getAppointmentsForDate = (date: string | Dayjs): Appointment[] => {
     const dateKey = dayjs(date).format('YYYY-MM-DD')
     return appointmentsByDate.value[dateKey] || []
   }
 
   // Get appointments filtered by categories
-  const getFilteredAppointments = categories => {
+  const getFilteredAppointments = (categories: AppointmentCategory[]): Appointment[] => {
     if (!categories || categories.length === 0) {
       return appointments.value
     }
@@ -120,7 +158,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
   }
 
   // Load appointments from localStorage
-  const loadAppointments = () => {
+  const loadAppointments = (): void => {
     isLoading.value = true
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
@@ -146,7 +184,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
   }
 
   // Save appointments to localStorage
-  const saveToStorage = () => {
+  const saveToStorage = (): void => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(appointments.value))
     } catch (error) {
@@ -155,7 +193,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
   }
 
   // Save pending operations to localStorage
-  const savePendingOps = () => {
+  const savePendingOps = (): void => {
     try {
       localStorage.setItem(PENDING_OPS_KEY, JSON.stringify(pendingOperations.value))
     } catch (error) {
@@ -164,8 +202,11 @@ export const useAppointmentsStore = defineStore('appointments', () => {
   }
 
   // Queue an operation for sync
-  const queueOperation = (type, data) => {
-    const operation = {
+  const queueOperation = (
+    type: OperationType,
+    data: Appointment | { id: string; deletedAt: number }
+  ): void => {
+    const operation: PendingOperation = {
       id: generateId(),
       type,
       data,
@@ -177,12 +218,15 @@ export const useAppointmentsStore = defineStore('appointments', () => {
   }
 
   // Create appointment
-  const createAppointment = (appointmentData, isOnline = navigator.onLine) => {
-    const newAppointment = {
+  const createAppointment = (
+    appointmentData: AppointmentInput,
+    isOnline: boolean = navigator.onLine
+  ): Appointment => {
+    const newAppointment: Appointment = {
       id: generateId(),
       title: appointmentData.title,
       date: dayjs(appointmentData.date).format('YYYY-MM-DD'),
-      time: appointmentData.isAllDay ? null : appointmentData.time,
+      time: appointmentData.isAllDay ? null : appointmentData.time || null,
       isAllDay: appointmentData.isAllDay || false,
       category: appointmentData.category,
       notes: appointmentData.notes || '',
@@ -199,17 +243,29 @@ export const useAppointmentsStore = defineStore('appointments', () => {
   }
 
   // Update appointment
-  const updateAppointment = (id, updates, isOnline = navigator.onLine) => {
+  const updateAppointment = (
+    id: string,
+    updates: Partial<AppointmentInput>,
+    isOnline: boolean = navigator.onLine
+  ): Appointment | null => {
     const index = appointments.value.findIndex(apt => apt.id === id)
     if (index === -1) return null
 
-    const updatedAppointment = {
-      ...appointments.value[index],
-      ...updates,
-      date: updates.date
-        ? dayjs(updates.date).format('YYYY-MM-DD')
-        : appointments.value[index].date,
-      time: updates.isAllDay ? null : updates.time,
+    const currentAppointment = appointments.value[index]
+    if (!currentAppointment) return null
+
+    const updatedAppointment: Appointment = {
+      id: currentAppointment.id,
+      title: updates.title !== undefined ? updates.title : currentAppointment.title,
+      date: updates.date ? dayjs(updates.date).format('YYYY-MM-DD') : currentAppointment.date,
+      time: updates.isAllDay
+        ? null
+        : updates.time !== undefined
+          ? updates.time
+          : currentAppointment.time,
+      isAllDay: updates.isAllDay !== undefined ? updates.isAllDay : currentAppointment.isAllDay,
+      category: updates.category !== undefined ? updates.category : currentAppointment.category,
+      notes: updates.notes !== undefined ? updates.notes : currentAppointment.notes,
       syncStatus: isOnline ? 'synced' : 'pending',
       updatedAt: Date.now()
     }
@@ -223,7 +279,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
   }
 
   // Delete appointment
-  const deleteAppointment = id => {
+  const deleteAppointment = (id: string): boolean => {
     const index = appointments.value.findIndex(apt => apt.id === id)
     if (index === -1) return false
 
@@ -236,12 +292,12 @@ export const useAppointmentsStore = defineStore('appointments', () => {
   }
 
   // Get appointment by ID
-  const getAppointmentById = id => {
+  const getAppointmentById = (id: string): Appointment | undefined => {
     return appointments.value.find(apt => apt.id === id)
   }
 
   // Process pending operations (simulated sync)
-  const processPendingOperations = async () => {
+  const processPendingOperations = async (): Promise<void> => {
     if (pendingOperations.value.length === 0) return
 
     const toProcess = [...pendingOperations.value].sort((a, b) => a.timestamp - b.timestamp)
@@ -253,7 +309,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
 
         // Mark appointment as synced
         if (operation.type !== 'delete') {
-          const apt = appointments.value.find(a => a.id === operation.data.id)
+          const apt = appointments.value.find(a => a.id === (operation.data as Appointment).id)
           if (apt) {
             apt.syncStatus = 'synced'
           }
@@ -275,7 +331,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
   }
 
   // Clear all pending operations (after successful sync)
-  const clearPendingOperations = () => {
+  const clearPendingOperations = (): void => {
     pendingOperations.value = []
     savePendingOps()
   }
