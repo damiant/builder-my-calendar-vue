@@ -89,9 +89,10 @@ onUnmounted(() => {
   networkStore.removeListeners()
 })
 
-// Provide edit handler for child components
+// Provide handlers for child components
 import { provide } from 'vue'
 provide('editAppointment', handleEditAppointment)
+provide('newAppointment', handleNewAppointment)
 </script>
 
 <template>
