@@ -241,16 +241,16 @@ export const useAppointmentsStore = defineStore('appointments', () => {
     const index = appointments.value.findIndex(apt => apt.id === id)
     if (index === -1) return null
 
+    const currentAppointment = appointments.value[index]
+
     const updatedAppointment: Appointment = {
-      ...appointments.value[index],
-      ...(updates.title && { title: updates.title }),
-      ...(updates.category && { category: updates.category }),
-      ...(updates.notes !== undefined && { notes: updates.notes }),
-      date: updates.date
-        ? dayjs(updates.date).format('YYYY-MM-DD')
-        : appointments.value[index].date,
-      time: updates.isAllDay ? null : (updates.time || appointments.value[index].time),
-      isAllDay: updates.isAllDay !== undefined ? updates.isAllDay : appointments.value[index].isAllDay,
+      id: currentAppointment.id,
+      title: updates.title !== undefined ? updates.title : currentAppointment.title,
+      date: updates.date ? dayjs(updates.date).format('YYYY-MM-DD') : currentAppointment.date,
+      time: updates.isAllDay ? null : (updates.time !== undefined ? updates.time : currentAppointment.time),
+      isAllDay: updates.isAllDay !== undefined ? updates.isAllDay : currentAppointment.isAllDay,
+      category: updates.category !== undefined ? updates.category : currentAppointment.category,
+      notes: updates.notes !== undefined ? updates.notes : currentAppointment.notes,
       syncStatus: isOnline ? 'synced' : 'pending',
       updatedAt: Date.now()
     }
