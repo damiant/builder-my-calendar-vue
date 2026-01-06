@@ -24,9 +24,9 @@ const themeConfig = {
   token: {
     colorPrimary: '#65A30D',
     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-    borderRadius: 6,
+    borderRadius: 6
   },
-  algorithm: theme.defaultAlgorithm,
+  algorithm: theme.defaultAlgorithm
 }
 
 // Dialog state
@@ -52,7 +52,7 @@ const handleNewAppointment = () => {
 }
 
 // Handle edit appointment
-const handleEditAppointment = (appointment) => {
+const handleEditAppointment = appointment => {
   editingAppointment.value = appointment
   dialogVisible.value = true
 }
@@ -64,7 +64,7 @@ const handleDialogClose = () => {
 }
 
 // Handle dialog save
-const handleDialogSave = (appointmentData) => {
+const handleDialogSave = appointmentData => {
   if (editingAppointment.value) {
     appointmentsStore.updateAppointment(editingAppointment.value.id, appointmentData)
   } else {
@@ -74,7 +74,7 @@ const handleDialogSave = (appointmentData) => {
 }
 
 // Handle dialog delete
-const handleDialogDelete = (appointmentId) => {
+const handleDialogDelete = appointmentId => {
   appointmentsStore.deleteAppointment(appointmentId)
   handleDialogClose()
 }
@@ -111,10 +111,7 @@ provide('editAppointment', handleEditAppointment)
         <!-- Calendar View -->
         <div class="calendar-container">
           <a-spin :spinning="appointmentsStore.isLoading">
-            <component 
-              :is="currentViewComponent" 
-              @edit-appointment="handleEditAppointment"
-            />
+            <component :is="currentViewComponent" @edit-appointment="handleEditAppointment" />
           </a-spin>
         </div>
       </div>

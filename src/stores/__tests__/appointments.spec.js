@@ -6,11 +6,11 @@ import { useAppointmentsStore } from '../appointments'
 const localStorageMock = (() => {
   let store = {}
   return {
-    getItem: vi.fn((key) => store[key] || null),
+    getItem: vi.fn(key => store[key] || null),
     setItem: vi.fn((key, value) => {
       store[key] = value
     }),
-    removeItem: vi.fn((key) => {
+    removeItem: vi.fn(key => {
       delete store[key]
     }),
     clear: vi.fn(() => {
@@ -37,7 +37,7 @@ describe('Appointments Store', () => {
   it('should load sample appointments on first initialization', () => {
     const store = useAppointmentsStore()
     store.loadAppointments()
-    
+
     // Should create sample appointments
     expect(store.appointments.length).toBeGreaterThan(0)
     expect(store.isLoading).toBe(false)
@@ -47,7 +47,7 @@ describe('Appointments Store', () => {
     const store = useAppointmentsStore()
     store.loadAppointments()
     const initialCount = store.appointments.length
-    
+
     const newAppointment = store.createAppointment({
       title: 'Test Appointment',
       date: '2024-01-15',
@@ -56,7 +56,7 @@ describe('Appointments Store', () => {
       category: 'work',
       notes: 'Test notes'
     })
-    
+
     expect(newAppointment).toBeDefined()
     expect(newAppointment.id).toBeDefined()
     expect(newAppointment.title).toBe('Test Appointment')
@@ -67,17 +67,17 @@ describe('Appointments Store', () => {
   it('should update an existing appointment', () => {
     const store = useAppointmentsStore()
     store.loadAppointments()
-    
+
     const appointment = store.createAppointment({
       title: 'Original Title',
       date: '2024-01-15',
       category: 'work'
     })
-    
+
     const updated = store.updateAppointment(appointment.id, {
       title: 'Updated Title'
     })
-    
+
     expect(updated.title).toBe('Updated Title')
     expect(store.getAppointmentById(appointment.id).title).toBe('Updated Title')
   })
@@ -85,16 +85,16 @@ describe('Appointments Store', () => {
   it('should delete an appointment', () => {
     const store = useAppointmentsStore()
     store.loadAppointments()
-    
+
     const appointment = store.createAppointment({
       title: 'To Be Deleted',
       date: '2024-01-15',
       category: 'home'
     })
-    
+
     const countBefore = store.appointments.length
     const result = store.deleteAppointment(appointment.id)
-    
+
     expect(result).toBe(true)
     expect(store.appointments.length).toBe(countBefore - 1)
     expect(store.getAppointmentById(appointment.id)).toBeUndefined()
@@ -103,19 +103,19 @@ describe('Appointments Store', () => {
   it('should group appointments by date', () => {
     const store = useAppointmentsStore()
     store.loadAppointments()
-    
+
     store.createAppointment({
       title: 'Appointment 1',
       date: '2024-02-20',
       category: 'work'
     })
-    
+
     store.createAppointment({
       title: 'Appointment 2',
       date: '2024-02-20',
       category: 'home'
     })
-    
+
     const appointments = store.getAppointmentsForDate('2024-02-20')
     expect(appointments.length).toBe(2)
   })
@@ -123,26 +123,26 @@ describe('Appointments Store', () => {
   it('should filter appointments by category', () => {
     const store = useAppointmentsStore()
     store.loadAppointments()
-    
+
     // Clear existing and add specific appointments
     store.appointments = []
-    
+
     store.createAppointment({
       title: 'Work Task',
       date: '2024-01-15',
       category: 'work'
     })
-    
+
     store.createAppointment({
       title: 'Home Task',
       date: '2024-01-15',
       category: 'home'
     })
-    
+
     const workOnly = store.getFilteredAppointments(['work'])
     const homeOnly = store.getFilteredAppointments(['home'])
     const all = store.getFilteredAppointments([])
-    
+
     expect(workOnly.length).toBe(1)
     expect(workOnly[0].category).toBe('work')
     expect(homeOnly.length).toBe(1)
@@ -153,15 +153,15 @@ describe('Appointments Store', () => {
   it('should track pending operations', () => {
     const store = useAppointmentsStore()
     store.loadAppointments()
-    
+
     expect(store.pendingCount).toBe(0)
-    
+
     store.createAppointment({
       title: 'New Appointment',
       date: '2024-01-15',
       category: 'work'
     })
-    
+
     // Operation should be queued
     expect(store.pendingOperations.length).toBeGreaterThan(0)
   })
@@ -169,23 +169,29 @@ describe('Appointments Store', () => {
   it('should mark appointments with correct sync status', () => {
     const store = useAppointmentsStore()
     store.loadAppointments()
-    
+
     // Online - should be synced
-    const onlineAppointment = store.createAppointment({
-      title: 'Online Appointment',
-      date: '2024-01-15',
-      category: 'work'
-    }, true)
-    
+    const onlineAppointment = store.createAppointment(
+      {
+        title: 'Online Appointment',
+        date: '2024-01-15',
+        category: 'work'
+      },
+      true
+    )
+
     expect(onlineAppointment.syncStatus).toBe('synced')
-    
+
     // Offline - should be pending
-    const offlineAppointment = store.createAppointment({
-      title: 'Offline Appointment',
-      date: '2024-01-15',
-      category: 'home'
-    }, false)
-    
+    const offlineAppointment = store.createAppointment(
+      {
+        title: 'Offline Appointment',
+        date: '2024-01-15',
+        category: 'home'
+      },
+      false
+    )
+
     expect(offlineAppointment.syncStatus).toBe('pending')
   })
 })

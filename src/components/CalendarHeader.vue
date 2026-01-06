@@ -33,12 +33,12 @@ const monthOptions = [
 
 const selectedYear = computed({
   get: () => calendarStore.currentYear,
-  set: (value) => calendarStore.setYear(value)
+  set: value => calendarStore.setYear(value)
 })
 
 const selectedMonth = computed({
   get: () => calendarStore.currentMonth,
-  set: (value) => calendarStore.setMonth(value)
+  set: value => calendarStore.setMonth(value)
 })
 
 const handlePrevious = () => {
@@ -149,7 +149,7 @@ const handleNext = () => {
   .calendar-header {
     flex-direction: column;
   }
-  
+
   .navigation-section {
     width: 100%;
     justify-content: space-between;

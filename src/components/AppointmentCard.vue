@@ -48,13 +48,13 @@ const handleClick = () => {
 }
 
 // Handle reschedule
-const handleReschedule = (event) => {
+const handleReschedule = event => {
   event.stopPropagation()
   emit('reschedule', props.appointment)
 }
 
 // Handle keydown
-const handleKeydown = (event) => {
+const handleKeydown = event => {
   if (event.key === 'Enter' || event.key === ' ') {
     event.preventDefault()
     handleClick()
@@ -76,28 +76,19 @@ const handleKeydown = (event) => {
         <span class="date">{{ formattedDate }}</span>
         <span class="time">{{ formattedTime }}</span>
       </div>
-      <span 
-        class="category-badge"
-        :style="{ backgroundColor: categoryColor }"
-      >
+      <span class="category-badge" :style="{ backgroundColor: categoryColor }">
         {{ categoryLabel }}
       </span>
     </div>
-    
+
     <h3 class="card-title">{{ appointment.title }}</h3>
-    
+
     <p class="card-notes">
       {{ appointment.notes || 'No notes' }}
     </p>
-    
+
     <div class="card-footer">
-      <a-button 
-        type="link" 
-        size="small"
-        @click="handleReschedule"
-      >
-        Reschedule
-      </a-button>
+      <a-button type="link" size="small" @click="handleReschedule"> Reschedule </a-button>
     </div>
   </a-card>
 </template>
@@ -113,7 +104,7 @@ const handleKeydown = (event) => {
 }
 
 .appointment-card:focus {
-  outline: 2px solid #65A30D;
+  outline: 2px solid #65a30d;
   outline-offset: 2px;
 }
 
@@ -194,7 +185,7 @@ const handleKeydown = (event) => {
 }
 
 .card-footer :deep(.ant-btn-link) {
-  color: #65A30D;
+  color: #65a30d;
   padding: 0;
   height: auto;
 }

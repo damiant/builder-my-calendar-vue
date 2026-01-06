@@ -17,12 +17,12 @@ export const useNetworkStore = defineStore('network', () => {
     if (isSyncing.value) {
       return 'Syncing changes...'
     }
-    
+
     const appointmentsStore = useAppointmentsStore()
     if (appointmentsStore.pendingCount > 0) {
       return `${appointmentsStore.pendingCount} change${appointmentsStore.pendingCount > 1 ? 's' : ''} waiting to sync`
     }
-    
+
     return 'All changes synced'
   })
 
@@ -30,19 +30,19 @@ export const useNetworkStore = defineStore('network', () => {
     if (isSyncing.value) {
       return 'sync' // Will spin
     }
-    
+
     const appointmentsStore = useAppointmentsStore()
     if (appointmentsStore.pendingCount > 0) {
       return 'cloud-upload'
     }
-    
+
     return 'cloud'
   })
 
   // Actions
-  const setOnline = (status) => {
+  const setOnline = status => {
     isOnline.value = status
-    
+
     // Attempt to sync when coming back online
     if (status) {
       syncPendingChanges()
@@ -51,12 +51,12 @@ export const useNetworkStore = defineStore('network', () => {
 
   const syncPendingChanges = async () => {
     if (isSyncing.value || !isOnline.value) return
-    
+
     const appointmentsStore = useAppointmentsStore()
     if (appointmentsStore.pendingCount === 0) return
-    
+
     isSyncing.value = true
-    
+
     try {
       await appointmentsStore.processPendingOperations()
       lastSyncTime.value = Date.now()
@@ -70,13 +70,13 @@ export const useNetworkStore = defineStore('network', () => {
   const initializeListeners = () => {
     onlineHandler = () => setOnline(true)
     offlineHandler = () => setOnline(false)
-    
+
     window.addEventListener('online', onlineHandler)
     window.addEventListener('offline', offlineHandler)
-    
+
     // Check initial status
     isOnline.value = navigator.onLine
-    
+
     // Sync on initialization if online
     if (isOnline.value) {
       syncPendingChanges()
@@ -97,11 +97,11 @@ export const useNetworkStore = defineStore('network', () => {
     isOnline,
     isSyncing,
     lastSyncTime,
-    
+
     // Getters
     syncStatusText,
     syncIcon,
-    
+
     // Actions
     setOnline,
     syncPendingChanges,

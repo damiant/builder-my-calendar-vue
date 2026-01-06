@@ -106,13 +106,13 @@ export const useAppointmentsStore = defineStore('appointments', () => {
   const hasPendingChanges = computed(() => pendingOperations.value.length > 0)
 
   // Get appointments for a specific date
-  const getAppointmentsForDate = (date) => {
+  const getAppointmentsForDate = date => {
     const dateKey = dayjs(date).format('YYYY-MM-DD')
     return appointmentsByDate.value[dateKey] || []
   }
 
   // Get appointments filtered by categories
-  const getFilteredAppointments = (categories) => {
+  const getFilteredAppointments = categories => {
     if (!categories || categories.length === 0) {
       return appointments.value
     }
@@ -206,7 +206,9 @@ export const useAppointmentsStore = defineStore('appointments', () => {
     const updatedAppointment = {
       ...appointments.value[index],
       ...updates,
-      date: updates.date ? dayjs(updates.date).format('YYYY-MM-DD') : appointments.value[index].date,
+      date: updates.date
+        ? dayjs(updates.date).format('YYYY-MM-DD')
+        : appointments.value[index].date,
       time: updates.isAllDay ? null : updates.time,
       syncStatus: isOnline ? 'synced' : 'pending',
       updatedAt: Date.now()
@@ -235,7 +237,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
   }
 
   // Get appointment by ID
-  const getAppointmentById = (id) => {
+  const getAppointmentById = id => {
     return appointments.value.find(apt => apt.id === id)
   }
 
@@ -244,12 +246,12 @@ export const useAppointmentsStore = defineStore('appointments', () => {
     if (pendingOperations.value.length === 0) return
 
     const toProcess = [...pendingOperations.value].sort((a, b) => a.timestamp - b.timestamp)
-    
+
     for (const operation of toProcess) {
       try {
         // Simulate API call delay
         await new Promise(resolve => setTimeout(resolve, 100))
-        
+
         // Mark appointment as synced
         if (operation.type !== 'delete') {
           const apt = appointments.value.find(a => a.id === operation.data.id)
@@ -284,12 +286,12 @@ export const useAppointmentsStore = defineStore('appointments', () => {
     appointments,
     pendingOperations,
     isLoading,
-    
+
     // Getters
     appointmentsByDate,
     pendingCount,
     hasPendingChanges,
-    
+
     // Actions
     loadAppointments,
     createAppointment,

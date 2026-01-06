@@ -15,26 +15,28 @@ export const useCalendarStore = defineStore('calendar', () => {
   const formattedDate = computed(() => selectedDate.value.format('YYYY-MM-DD'))
 
   // Check if a category is selected
-  const isCategorySelected = (category) => {
+  const isCategorySelected = category => {
     return selectedCategories.value.includes(category)
   }
 
   // Check if all categories are selected (no filtering)
   const isShowingAll = computed(() => {
-    return selectedCategories.value.length === 0 || 
-           (selectedCategories.value.includes('work') && selectedCategories.value.includes('home'))
+    return (
+      selectedCategories.value.length === 0 ||
+      (selectedCategories.value.includes('work') && selectedCategories.value.includes('home'))
+    )
   })
 
   // Actions
-  const setSelectedDate = (date) => {
+  const setSelectedDate = date => {
     selectedDate.value = dayjs(date)
   }
 
-  const setViewMode = (mode) => {
+  const setViewMode = mode => {
     viewMode.value = mode
   }
 
-  const toggleCategory = (category) => {
+  const toggleCategory = category => {
     const index = selectedCategories.value.indexOf(category)
     if (index === -1) {
       selectedCategories.value.push(category)
@@ -43,7 +45,7 @@ export const useCalendarStore = defineStore('calendar', () => {
     }
   }
 
-  const setCategories = (categories) => {
+  const setCategories = categories => {
     selectedCategories.value = [...categories]
   }
 
@@ -76,11 +78,11 @@ export const useCalendarStore = defineStore('calendar', () => {
     selectedDate.value = dayjs()
   }
 
-  const setYear = (year) => {
+  const setYear = year => {
     selectedDate.value = selectedDate.value.year(year)
   }
 
-  const setMonth = (month) => {
+  const setMonth = month => {
     selectedDate.value = selectedDate.value.month(month)
   }
 
@@ -89,14 +91,14 @@ export const useCalendarStore = defineStore('calendar', () => {
     selectedDate,
     viewMode,
     selectedCategories,
-    
+
     // Getters
     currentYear,
     currentMonth,
     currentMonthName,
     formattedDate,
     isShowingAll,
-    
+
     // Actions
     setSelectedDate,
     setViewMode,
@@ -105,7 +107,7 @@ export const useCalendarStore = defineStore('calendar', () => {
     selectAllCategories,
     clearCategories,
     isCategorySelected,
-    
+
     // Navigation
     goToPreviousMonth,
     goToNextMonth,

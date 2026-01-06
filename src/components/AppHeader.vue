@@ -9,7 +9,7 @@ const calendarStore = useCalendarStore()
 
 const viewMode = computed({
   get: () => calendarStore.viewMode,
-  set: (value) => calendarStore.setViewMode(value)
+  set: value => calendarStore.setViewMode(value)
 })
 
 const handleNewAppointment = () => {
@@ -75,7 +75,7 @@ const handleNewAppointment = () => {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .header-left,
   .header-center,
   .header-right {

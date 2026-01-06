@@ -25,33 +25,35 @@ const months = computed(() => {
 })
 
 // Get appointment count for a month
-const getMonthAppointmentCount = (monthDate) => {
+const getMonthAppointmentCount = monthDate => {
   const startOfMonth = monthDate.startOf('month')
   const endOfMonth = monthDate.endOf('month')
   const selectedCategories = calendarStore.selectedCategories
-  
+
   let count = 0
   appointmentsStore.appointments.forEach(apt => {
     const aptDate = dayjs(apt.date)
-    if (aptDate.isAfter(startOfMonth.subtract(1, 'day')) && 
-        aptDate.isBefore(endOfMonth.add(1, 'day'))) {
+    if (
+      aptDate.isAfter(startOfMonth.subtract(1, 'day')) &&
+      aptDate.isBefore(endOfMonth.add(1, 'day'))
+    ) {
       if (selectedCategories.length === 0 || selectedCategories.includes(apt.category)) {
         count++
       }
     }
   })
-  
+
   return count
 }
 
 // Handle month click - switch to month view
-const handleMonthClick = (month) => {
+const handleMonthClick = month => {
   calendarStore.setSelectedDate(month.date)
   calendarStore.setViewMode('month')
 }
 
 // Check if month is current month
-const isCurrentMonth = (monthIndex) => {
+const isCurrentMonth = monthIndex => {
   const now = dayjs()
   return now.year() === calendarStore.currentYear && now.month() === monthIndex
 }
@@ -60,7 +62,7 @@ const isCurrentMonth = (monthIndex) => {
 <template>
   <div class="year-view">
     <div class="year-title">{{ calendarStore.currentYear }}</div>
-    
+
     <div class="months-grid">
       <div
         v-for="month in months"
@@ -75,10 +77,7 @@ const isCurrentMonth = (monthIndex) => {
         <div class="month-name">{{ month.name }}</div>
         <div class="month-full-name">{{ month.fullName }}</div>
         <div v-if="month.appointmentCount > 0" class="appointment-count">
-          <a-badge 
-            :count="month.appointmentCount" 
-            :number-style="{ backgroundColor: '#65A30D' }"
-          />
+          <a-badge :count="month.appointmentCount" :number-style="{ backgroundColor: '#65A30D' }" />
         </div>
       </div>
     </div>
@@ -118,19 +117,19 @@ const isCurrentMonth = (monthIndex) => {
 
 .month-card:hover {
   background: #f3f4f6;
-  border-color: #65A30D;
+  border-color: #65a30d;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .month-card:focus {
-  outline: 2px solid #65A30D;
+  outline: 2px solid #65a30d;
   outline-offset: 2px;
 }
 
 .month-card.current-month {
   background: #f0fdf4;
-  border-color: #65A30D;
+  border-color: #65a30d;
 }
 
 .month-name {

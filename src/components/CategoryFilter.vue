@@ -11,15 +11,15 @@ const categories = [
 
 const selectedCategories = computed(() => calendarStore.selectedCategories)
 
-const handleCategoryChange = (checkedValues) => {
+const handleCategoryChange = checkedValues => {
   calendarStore.setCategories(checkedValues)
 }
 
-const handleTagClose = (category) => {
+const handleTagClose = category => {
   calendarStore.toggleCategory(category)
 }
 
-const isCategorySelected = (category) => {
+const isCategorySelected = category => {
   return selectedCategories.value.includes(category)
 }
 </script>
@@ -34,16 +34,9 @@ const isCategorySelected = (category) => {
       :max-tag-count="2"
       @change="handleCategoryChange"
     >
-      <a-select-option 
-        v-for="cat in categories" 
-        :key="cat.key" 
-        :value="cat.key"
-      >
+      <a-select-option v-for="cat in categories" :key="cat.key" :value="cat.key">
         <div class="category-option">
-          <span 
-            class="category-dot" 
-            :style="{ backgroundColor: cat.color }"
-          />
+          <span class="category-dot" :style="{ backgroundColor: cat.color }" />
           {{ cat.label }}
         </div>
       </a-select-option>

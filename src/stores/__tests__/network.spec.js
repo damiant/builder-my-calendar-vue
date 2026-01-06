@@ -13,11 +13,11 @@ Object.defineProperty(navigator, 'onLine', {
 const localStorageMock = (() => {
   let store = {}
   return {
-    getItem: vi.fn((key) => store[key] || null),
+    getItem: vi.fn(key => store[key] || null),
     setItem: vi.fn((key, value) => {
       store[key] = value
     }),
-    removeItem: vi.fn((key) => {
+    removeItem: vi.fn(key => {
       delete store[key]
     }),
     clear: vi.fn(() => {
@@ -43,40 +43,40 @@ describe('Network Store', () => {
 
   it('should initialize with online status', () => {
     const store = useNetworkStore()
-    
+
     expect(store.isOnline).toBe(true)
     expect(store.isSyncing).toBe(false)
   })
 
   it('should update online status', () => {
     const store = useNetworkStore()
-    
+
     store.setOnline(false)
     expect(store.isOnline).toBe(false)
-    
+
     store.setOnline(true)
     expect(store.isOnline).toBe(true)
   })
 
   it('should provide correct sync status text when synced', () => {
     const store = useNetworkStore()
-    
+
     expect(store.syncStatusText).toBe('All changes synced')
   })
 
   it('should provide correct sync status text when syncing', () => {
     const store = useNetworkStore()
     store.isSyncing = true
-    
+
     expect(store.syncStatusText).toBe('Syncing changes...')
   })
 
   it('should provide correct sync icon', () => {
     const store = useNetworkStore()
-    
+
     // When synced
     expect(store.syncIcon).toBe('cloud')
-    
+
     // When syncing
     store.isSyncing = true
     expect(store.syncIcon).toBe('sync')
@@ -85,34 +85,34 @@ describe('Network Store', () => {
   it('should initialize listeners', () => {
     const store = useNetworkStore()
     const addEventListenerSpy = vi.spyOn(window, 'addEventListener')
-    
+
     store.initializeListeners()
-    
+
     expect(addEventListenerSpy).toHaveBeenCalledWith('online', expect.any(Function))
     expect(addEventListenerSpy).toHaveBeenCalledWith('offline', expect.any(Function))
-    
+
     addEventListenerSpy.mockRestore()
   })
 
   it('should remove listeners', () => {
     const store = useNetworkStore()
     const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener')
-    
+
     store.initializeListeners()
     store.removeListeners()
-    
+
     expect(removeEventListenerSpy).toHaveBeenCalledWith('online', expect.any(Function))
     expect(removeEventListenerSpy).toHaveBeenCalledWith('offline', expect.any(Function))
-    
+
     removeEventListenerSpy.mockRestore()
   })
 
   it('should not sync when offline', async () => {
     const store = useNetworkStore()
     store.setOnline(false)
-    
+
     await store.syncPendingChanges()
-    
+
     expect(store.isSyncing).toBe(false)
   })
 })

@@ -70,36 +70,45 @@ const resetForm = () => {
 }
 
 // Watch for visibility changes
-watch(() => props.visible, (newVal) => {
-  if (newVal) {
-    resetForm()
+watch(
+  () => props.visible,
+  newVal => {
+    if (newVal) {
+      resetForm()
+    }
   }
-})
+)
 
 // Watch for appointment changes
-watch(() => props.appointment, () => {
-  if (props.visible) {
-    resetForm()
+watch(
+  () => props.appointment,
+  () => {
+    if (props.visible) {
+      resetForm()
+    }
   }
-})
+)
 
 // Handle form submit
 const handleSubmit = async () => {
   try {
     await formRef.value.validate()
-    
+
     isSubmitting.value = true
-    
+
     const appointmentData = {
       title: formData.value.title,
       date: formData.value.date,
-      time: formData.value.isAllDay ? null : 
-            (formData.value.time ? formData.value.time.format('HH:mm') : null),
+      time: formData.value.isAllDay
+        ? null
+        : formData.value.time
+          ? formData.value.time.format('HH:mm')
+          : null,
       isAllDay: formData.value.isAllDay,
       category: formData.value.category,
       notes: formData.value.notes
     }
-    
+
     emit('save', appointmentData)
   } catch (error) {
     console.log('Validation failed:', error)
@@ -116,7 +125,7 @@ const handleCancel = () => {
 // Handle delete
 const handleDelete = () => {
   if (!props.appointment) return
-  
+
   Modal.confirm({
     title: 'Delete Appointment',
     content: 'Are you sure you want to delete this appointment? This action cannot be undone.',
@@ -148,22 +157,15 @@ const handleDelete = () => {
       show-icon
       style="margin-bottom: 16px"
     />
-    
+
     <!-- Form -->
-    <AppointmentForm
-      ref="formRef"
-      v-model="formData"
-    />
-    
+    <AppointmentForm ref="formRef" v-model="formData" />
+
     <!-- Footer -->
     <template #footer>
       <div class="dialog-footer">
         <div class="footer-left">
-          <a-button
-            v-if="isEditing"
-            danger
-            @click="handleDelete"
-          >
+          <a-button v-if="isEditing" danger @click="handleDelete">
             <template #icon>
               <DeleteOutlined />
             </template>
@@ -172,9 +174,7 @@ const handleDelete = () => {
         </div>
         <div class="footer-right">
           <a-button @click="handleCancel">Cancel</a-button>
-          <a-button type="primary" :loading="isSubmitting" @click="handleSubmit">
-            Save
-          </a-button>
+          <a-button type="primary" :loading="isSubmitting" @click="handleSubmit"> Save </a-button>
         </div>
       </div>
     </template>

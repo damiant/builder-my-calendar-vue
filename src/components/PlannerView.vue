@@ -14,19 +14,17 @@ const appointmentsStore = useAppointmentsStore()
 const filteredAppointments = computed(() => {
   const selectedCategories = calendarStore.selectedCategories
   let appointments = [...appointmentsStore.appointments]
-  
+
   // Filter by categories
   if (selectedCategories.length > 0) {
-    appointments = appointments.filter(apt => 
-      selectedCategories.includes(apt.category)
-    )
+    appointments = appointments.filter(apt => selectedCategories.includes(apt.category))
   }
-  
+
   // Sort by date and time
   appointments.sort((a, b) => {
     const dateCompare = dayjs(a.date).valueOf() - dayjs(b.date).valueOf()
     if (dateCompare !== 0) return dateCompare
-    
+
     // If same date, sort by time
     if (a.time && b.time) {
       return a.time.localeCompare(b.time)
@@ -36,7 +34,7 @@ const filteredAppointments = computed(() => {
     if (!a.isAllDay && b.isAllDay) return 1
     return 0
   })
-  
+
   return appointments
 })
 
@@ -44,12 +42,12 @@ const filteredAppointments = computed(() => {
 const hasAppointments = computed(() => filteredAppointments.value.length > 0)
 
 // Handle appointment click
-const handleAppointmentClick = (appointment) => {
+const handleAppointmentClick = appointment => {
   emit('edit-appointment', appointment)
 }
 
 // Handle reschedule
-const handleReschedule = (appointment) => {
+const handleReschedule = appointment => {
   emit('edit-appointment', appointment)
 }
 </script>
@@ -67,12 +65,9 @@ const handleReschedule = (appointment) => {
         />
       </div>
     </template>
-    
+
     <template v-else>
-      <a-empty
-        description="No appointments found"
-        class="empty-state"
-      >
+      <a-empty description="No appointments found" class="empty-state">
         <template #image>
           <CalendarOutlined class="empty-icon" />
         </template>
