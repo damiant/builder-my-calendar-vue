@@ -15,7 +15,7 @@ const formRef = ref(null)
 // Local form data
 const formData = computed({
   get: () => props.modelValue,
-  set: (value) => emit('update:modelValue', value)
+  set: value => emit('update:modelValue', value)
 })
 
 // Update individual fields
@@ -38,16 +38,12 @@ const rules = {
     { required: true, message: 'Please enter a title', trigger: 'blur' },
     { min: 1, max: 100, message: 'Title must be between 1 and 100 characters', trigger: 'blur' }
   ],
-  date: [
-    { required: true, message: 'Please select a date', trigger: 'change' }
-  ],
-  category: [
-    { required: true, message: 'Please select a category', trigger: 'change' }
-  ]
+  date: [{ required: true, message: 'Please select a date', trigger: 'change' }],
+  category: [{ required: true, message: 'Please select a category', trigger: 'change' }]
 }
 
 // Handle all-day toggle
-const handleAllDayChange = (checked) => {
+const handleAllDayChange = checked => {
   updateField('isAllDay', checked)
   if (checked) {
     updateField('time', null)
@@ -70,13 +66,7 @@ defineExpose({
 </script>
 
 <template>
-  <a-form
-    ref="formRef"
-    :model="formData"
-    :rules="rules"
-    layout="vertical"
-    class="appointment-form"
-  >
+  <a-form ref="formRef" :model="formData" :rules="rules" layout="vertical" class="appointment-form">
     <!-- Title -->
     <a-form-item label="Title" name="title" required>
       <a-input
@@ -87,7 +77,7 @@ defineExpose({
         @update:value="updateField('title', $event)"
       />
     </a-form-item>
-    
+
     <!-- Date and Time Row -->
     <div class="form-row">
       <!-- Date -->
@@ -100,14 +90,9 @@ defineExpose({
           @update:value="updateField('date', $event)"
         />
       </a-form-item>
-      
+
       <!-- Time -->
-      <a-form-item 
-        v-if="!formData.isAllDay" 
-        label="Time" 
-        name="time"
-        class="form-item-time"
-      >
+      <a-form-item v-if="!formData.isAllDay" label="Time" name="time" class="form-item-time">
         <a-time-picker
           :value="formData.time"
           format="h:mm A"
@@ -118,18 +103,15 @@ defineExpose({
         />
       </a-form-item>
     </div>
-    
+
     <!-- All Day Toggle -->
     <a-form-item>
       <div class="all-day-toggle">
-        <a-switch
-          :checked="formData.isAllDay"
-          @update:checked="handleAllDayChange"
-        />
+        <a-switch :checked="formData.isAllDay" @update:checked="handleAllDayChange" />
         <span class="toggle-label">All Day Event</span>
       </div>
     </a-form-item>
-    
+
     <!-- Category -->
     <a-form-item label="Category" name="category" required>
       <a-radio-group
@@ -137,20 +119,13 @@ defineExpose({
         button-style="solid"
         @update:value="updateField('category', $event)"
       >
-        <a-radio-button
-          v-for="cat in categoryOptions"
-          :key="cat.value"
-          :value="cat.value"
-        >
-          <span 
-            class="category-dot" 
-            :style="{ backgroundColor: cat.color }"
-          />
+        <a-radio-button v-for="cat in categoryOptions" :key="cat.value" :value="cat.value">
+          <span class="category-dot" :style="{ backgroundColor: cat.color }" />
           {{ cat.label }}
         </a-radio-button>
       </a-radio-group>
     </a-form-item>
-    
+
     <!-- Notes -->
     <a-form-item label="Notes" name="notes">
       <a-textarea
@@ -203,8 +178,8 @@ defineExpose({
 }
 
 :deep(.ant-radio-button-wrapper-checked) {
-  background-color: #65A30D !important;
-  border-color: #65A30D !important;
+  background-color: #65a30d !important;
+  border-color: #65a30d !important;
 }
 
 :deep(.ant-radio-button-wrapper-checked .category-dot) {

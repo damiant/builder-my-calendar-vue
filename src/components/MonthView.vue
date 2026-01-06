@@ -11,31 +11,30 @@ const appointmentsStore = useAppointmentsStore()
 // Calendar value binding
 const calendarValue = computed({
   get: () => calendarStore.selectedDate,
-  set: (value) => calendarStore.setSelectedDate(value)
+  set: value => calendarStore.setSelectedDate(value)
 })
 
 // Get category color
-const getCategoryColor = (category) => {
+const getCategoryColor = category => {
   return category === 'work' ? '#65A30D' : '#dc2626'
 }
 
-
 // Get appointments for a specific date
-const getDateAppointments = (date) => {
+const getDateAppointments = date => {
   const dateKey = date.format('YYYY-MM-DD')
   const appointments = appointmentsStore.appointmentsByDate[dateKey] || []
-  
+
   // Filter by selected categories
   const selectedCategories = calendarStore.selectedCategories
   if (selectedCategories.length === 0) {
     return appointments
   }
-  
+
   return appointments.filter(apt => selectedCategories.includes(apt.category))
 }
 
 // Handle date selection
-const handleSelect = (date) => {
+const handleSelect = date => {
   calendarStore.setSelectedDate(date)
 }
 
@@ -56,31 +55,37 @@ const handleAppointmentKeydown = (appointment, event) => {
 // Custom date cell render
 const dateCellRender = ({ current }) => {
   const appointments = getDateAppointments(current)
-  
+
   if (appointments.length === 0) return null
-  
-  return h('ul', { class: 'events-list' }, 
-    appointments.slice(0, 3).map((apt) => 
-      h('li', { 
-        key: apt.id, 
-        class: ['event-item', { 'pending-sync': apt.syncStatus === 'pending' }],
-        tabindex: 0,
-        role: 'button',
-        onClick: (e) => handleAppointmentClick(apt, e),
-        onKeydown: (e) => handleAppointmentKeydown(apt, e)
-      }, [
-        h('span', { 
-          class: 'event-dot',
-          style: { backgroundColor: getCategoryColor(apt.category) }
-        }),
-        h('span', { class: 'event-title' }, apt.title)
-      ])
+
+  return h(
+    'ul',
+    { class: 'events-list' },
+    appointments.slice(0, 3).map(apt =>
+      h(
+        'li',
+        {
+          key: apt.id,
+          class: ['event-item', { 'pending-sync': apt.syncStatus === 'pending' }],
+          tabindex: 0,
+          role: 'button',
+          onClick: e => handleAppointmentClick(apt, e),
+          onKeydown: e => handleAppointmentKeydown(apt, e)
+        },
+        [
+          h('span', {
+            class: 'event-dot',
+            style: { backgroundColor: getCategoryColor(apt.category) }
+          }),
+          h('span', { class: 'event-title' }, apt.title)
+        ]
+      )
     )
   )
 }
 
 // Handle panel change (month/year navigation)
-const handlePanelChange = (date) => {
+const handlePanelChange = date => {
   calendarStore.setSelectedDate(date)
 }
 </script>
@@ -96,7 +101,7 @@ const handlePanelChange = (date) => {
       <template #dateCellRender="{ current }">
         <component :is="() => dateCellRender({ current })" />
       </template>
-      
+
       <template #headerRender>
         <!-- Hide default header since we have our own -->
         <div></div>
@@ -119,11 +124,11 @@ const handlePanelChange = (date) => {
 }
 
 .month-view :deep(.ant-picker-cell-selected .ant-picker-cell-inner) {
-  background-color: #65A30D !important;
+  background-color: #65a30d !important;
 }
 
 .month-view :deep(.ant-picker-cell-today .ant-picker-cell-inner::before) {
-  border-color: #65A30D !important;
+  border-color: #65a30d !important;
 }
 
 :deep(.events-list) {
@@ -150,7 +155,7 @@ const handlePanelChange = (date) => {
 }
 
 :deep(.event-item:focus) {
-  outline: 2px solid #65A30D;
+  outline: 2px solid #65a30d;
   outline-offset: 1px;
 }
 

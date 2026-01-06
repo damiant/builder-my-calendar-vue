@@ -11,10 +11,9 @@ const categories = [
 
 const selectedCategories = computed(() => calendarStore.selectedCategories)
 
-const handleCategoryChange = (checkedValues) => {
+const handleCategoryChange = checkedValues => {
   calendarStore.setCategories(checkedValues)
 }
-
 </script>
 
 <template>
@@ -27,16 +26,9 @@ const handleCategoryChange = (checkedValues) => {
       :max-tag-count="2"
       @change="handleCategoryChange"
     >
-      <a-select-option 
-        v-for="cat in categories" 
-        :key="cat.key" 
-        :value="cat.key"
-      >
+      <a-select-option v-for="cat in categories" :key="cat.key" :value="cat.key">
         <div class="category-option">
-          <span 
-            class="category-dot" 
-            :style="{ backgroundColor: cat.color }"
-          />
+          <span class="category-dot" :style="{ backgroundColor: cat.color }" />
           {{ cat.label }}
         </div>
       </a-select-option>
