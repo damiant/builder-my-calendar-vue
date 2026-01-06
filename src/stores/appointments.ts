@@ -242,6 +242,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
     if (index === -1) return null
 
     const currentAppointment = appointments.value[index]
+    if (!currentAppointment) return null
 
     const updatedAppointment: Appointment = {
       id: currentAppointment.id,
