@@ -59,5 +59,14 @@ const handleCategoryChange = checkedValues => {
 :deep(.ant-select-selection-item) {
   display: flex;
   align-items: center;
+  color: #000000 !important;
+}
+
+:deep(.ant-select-selection-item-content) {
+  color: #000000 !important;
+}
+
+:deep(.ant-select-selection-item .category-option) {
+  color: #000000 !important;
 }
 </style>
