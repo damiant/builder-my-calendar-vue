@@ -1,7 +1,5 @@
 <script setup>
 import { computed, h } from 'vue'
-import { Badge } from 'ant-design-vue'
-import dayjs from 'dayjs'
 import { useCalendarStore } from '../stores/calendar'
 import { useAppointmentsStore } from '../stores/appointments'
 
@@ -13,35 +11,31 @@ const appointmentsStore = useAppointmentsStore()
 // Calendar value binding
 const calendarValue = computed({
   get: () => calendarStore.selectedDate,
-  set: value => calendarStore.setSelectedDate(value)
+  set: (value) => calendarStore.setSelectedDate(value)
 })
 
 // Get category color
-const getCategoryColor = category => {
+const getCategoryColor = (category) => {
   return category === 'work' ? '#65A30D' : '#dc2626'
 }
 
-// Get category badge status
-const getCategoryStatus = category => {
-  return category === 'work' ? 'processing' : 'error'
-}
 
 // Get appointments for a specific date
-const getDateAppointments = date => {
+const getDateAppointments = (date) => {
   const dateKey = date.format('YYYY-MM-DD')
   const appointments = appointmentsStore.appointmentsByDate[dateKey] || []
-
+  
   // Filter by selected categories
   const selectedCategories = calendarStore.selectedCategories
   if (selectedCategories.length === 0) {
     return appointments
   }
-
+  
   return appointments.filter(apt => selectedCategories.includes(apt.category))
 }
 
 // Handle date selection
-const handleSelect = (date, info) => {
+const handleSelect = (date) => {
   calendarStore.setSelectedDate(date)
 }
 
@@ -62,37 +56,31 @@ const handleAppointmentKeydown = (appointment, event) => {
 // Custom date cell render
 const dateCellRender = ({ current }) => {
   const appointments = getDateAppointments(current)
-
+  
   if (appointments.length === 0) return null
-
-  return h(
-    'ul',
-    { class: 'events-list' },
-    appointments.slice(0, 3).map(apt =>
-      h(
-        'li',
-        {
-          key: apt.id,
-          class: ['event-item', { 'pending-sync': apt.syncStatus === 'pending' }],
-          tabindex: 0,
-          role: 'button',
-          onClick: e => handleAppointmentClick(apt, e),
-          onKeydown: e => handleAppointmentKeydown(apt, e)
-        },
-        [
-          h('span', {
-            class: 'event-dot',
-            style: { backgroundColor: getCategoryColor(apt.category) }
-          }),
-          h('span', { class: 'event-title' }, apt.title)
-        ]
-      )
+  
+  return h('ul', { class: 'events-list' }, 
+    appointments.slice(0, 3).map((apt) => 
+      h('li', { 
+        key: apt.id, 
+        class: ['event-item', { 'pending-sync': apt.syncStatus === 'pending' }],
+        tabindex: 0,
+        role: 'button',
+        onClick: (e) => handleAppointmentClick(apt, e),
+        onKeydown: (e) => handleAppointmentKeydown(apt, e)
+      }, [
+        h('span', { 
+          class: 'event-dot',
+          style: { backgroundColor: getCategoryColor(apt.category) }
+        }),
+        h('span', { class: 'event-title' }, apt.title)
+      ])
     )
   )
 }
 
 // Handle panel change (month/year navigation)
-const handlePanelChange = (date, mode) => {
+const handlePanelChange = (date) => {
   calendarStore.setSelectedDate(date)
 }
 </script>
@@ -108,8 +96,8 @@ const handlePanelChange = (date, mode) => {
       <template #dateCellRender="{ current }">
         <component :is="() => dateCellRender({ current })" />
       </template>
-
-      <template #headerRender="{ value, type, onChange, onTypeChange }">
+      
+      <template #headerRender>
         <!-- Hide default header since we have our own -->
         <div></div>
       </template>
@@ -131,11 +119,11 @@ const handlePanelChange = (date, mode) => {
 }
 
 .month-view :deep(.ant-picker-cell-selected .ant-picker-cell-inner) {
-  background-color: #65a30d !important;
+  background-color: #65A30D !important;
 }
 
 .month-view :deep(.ant-picker-cell-today .ant-picker-cell-inner::before) {
-  border-color: #65a30d !important;
+  border-color: #65A30D !important;
 }
 
 :deep(.events-list) {
@@ -162,7 +150,7 @@ const handlePanelChange = (date, mode) => {
 }
 
 :deep(.event-item:focus) {
-  outline: 2px solid #65a30d;
+  outline: 2px solid #65A30D;
   outline-offset: 1px;
 }
 
