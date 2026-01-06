@@ -202,7 +202,10 @@ export const useAppointmentsStore = defineStore('appointments', () => {
   }
 
   // Queue an operation for sync
-  const queueOperation = (type: OperationType, data: Appointment | { id: string; deletedAt: number }): void => {
+  const queueOperation = (
+    type: OperationType,
+    data: Appointment | { id: string; deletedAt: number }
+  ): void => {
     const operation: PendingOperation = {
       id: generateId(),
       type,
@@ -215,7 +218,10 @@ export const useAppointmentsStore = defineStore('appointments', () => {
   }
 
   // Create appointment
-  const createAppointment = (appointmentData: AppointmentInput, isOnline: boolean = navigator.onLine): Appointment => {
+  const createAppointment = (
+    appointmentData: AppointmentInput,
+    isOnline: boolean = navigator.onLine
+  ): Appointment => {
     const newAppointment: Appointment = {
       id: generateId(),
       title: appointmentData.title,
@@ -237,7 +243,11 @@ export const useAppointmentsStore = defineStore('appointments', () => {
   }
 
   // Update appointment
-  const updateAppointment = (id: string, updates: Partial<AppointmentInput>, isOnline: boolean = navigator.onLine): Appointment | null => {
+  const updateAppointment = (
+    id: string,
+    updates: Partial<AppointmentInput>,
+    isOnline: boolean = navigator.onLine
+  ): Appointment | null => {
     const index = appointments.value.findIndex(apt => apt.id === id)
     if (index === -1) return null
 
@@ -248,7 +258,11 @@ export const useAppointmentsStore = defineStore('appointments', () => {
       id: currentAppointment.id,
       title: updates.title !== undefined ? updates.title : currentAppointment.title,
       date: updates.date ? dayjs(updates.date).format('YYYY-MM-DD') : currentAppointment.date,
-      time: updates.isAllDay ? null : (updates.time !== undefined ? updates.time : currentAppointment.time),
+      time: updates.isAllDay
+        ? null
+        : updates.time !== undefined
+          ? updates.time
+          : currentAppointment.time,
       isAllDay: updates.isAllDay !== undefined ? updates.isAllDay : currentAppointment.isAllDay,
       category: updates.category !== undefined ? updates.category : currentAppointment.category,
       notes: updates.notes !== undefined ? updates.notes : currentAppointment.notes,

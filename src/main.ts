@@ -43,7 +43,7 @@ const iconsList: (keyof typeof Icons)[] = [
   'ExclamationCircleOutlined'
 ]
 
-iconsList.forEach((iconName) => {
+iconsList.forEach(iconName => {
   const icon = Icons[iconName]
   if (icon && typeof icon !== 'string') {
     app.component(iconName, icon)
